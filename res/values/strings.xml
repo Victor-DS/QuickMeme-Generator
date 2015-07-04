@@ -1,0 +1,24 @@
+<resources>
+
+    <string name="app_name">QuickMeme Generator</string>
+    <string name="select_title">Select a meme</string>
+    <string name="error">Ops&#8230; Something went wrong</string>
+    <string name="tap_to_change">**Tap to change**</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="set_text_pop_up_title">Set Text</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="cor">Color</string>
+    <string name="text">Your text here&#8230;</string>
+    <string name="save_success">Saved</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="no_image_selected">No image selected</string>
+    <string name="press_again_to_exit">Press again to exit</string>
+    <string name="rate_us">Rate us!</string>
+    <string name="saving">Saving</string>
+    <string name="gallery">Gallery</string>
+    <string name="banner_ad_unit_id">ca-app-pub-9977323179127163/6011880531</string>
+    
+</resources>

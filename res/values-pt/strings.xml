@@ -1,0 +1,24 @@
+<resources>
+
+    <string name="app_name">Gerador de Memes</string>
+    <string name="select_title">Selecione um meme</string>
+    <string name="error">Ops&#8230; Algo deu errado</string>
+    <string name="tap_to_change">**Toque para mudar**</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="set_text_pop_up_title">Texto</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Salvar</string>
+    <string name="cor">Cor</string>
+    <string name="text">Seu texto aqui&#8230;</string>
+    <string name="save_success">Salvo com sucesso!</string>
+    <string name="no_internet_connection">Sem conexão com a internet</string>
+    <string name="no_image_selected">Nenhuma imagem selecionada</string>
+    <string name="press_again_to_exit">Pressione novamente para sair</string>
+    <string name="rate_us">Avalie-nos!</string>
+    <string name="saving">Salvando</string>
+    <string name="gallery">Galeria</string>
+    <string name="banner_ad_unit_id">ca-app-pub-9977323179127163/6011880531</string>
+    
+</resources>
