@@ -20,3 +20,6 @@ Also, this app is translated into Portuguese and English.
 - ActionBarSherlock;
 - AmbilWarna (for color selection);
 - Google Play Services (AdMob).
+
+
+[Check it out on Google Play!](https://play.google.com/store/apps/details?id=gerador.de.memes.meme)
