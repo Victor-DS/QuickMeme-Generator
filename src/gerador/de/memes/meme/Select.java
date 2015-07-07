@@ -130,7 +130,8 @@ public class Select extends SherlockActivity implements OnItemClickListener {
 				Toast.makeText(Select.this, R.string.error, Toast.LENGTH_SHORT).show();
 			else
 				u.setMemesList(result);
-			gView.setAdapter(new GridAdapter(Select.this, Parser.getMemes(result)));
+			memes.addAll(Parser.getMemes(result));
+			gView.setAdapter(new GridAdapter(Select.this, memes));
 		}
 		
 	}

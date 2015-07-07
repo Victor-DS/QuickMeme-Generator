@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="gerador.de.memes.meme"
-    android:versionCode="3"
-    android:versionName="Monk" >
+    android:versionCode="4"
+    android:versionName="Jolicoeur" >
 
     <uses-sdk
         android:minSdkVersion="8"
