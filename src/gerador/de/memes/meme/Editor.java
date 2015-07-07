@@ -32,23 +32,23 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
+/**
+ * @author victor
+ * 
+ * Meme Editor
+ */
 public class Editor extends SherlockActivity implements OnMenuItemClickListener, OnClickListener {
 		
 	private TextView superior, inferior, aPlus, aMinus, color;
-	
 	private ImageView imagem;
-	
 	private RelativeLayout MemeLayout;
-	
     private DisplayImageOptions options;
-
     private ImageLoader iLoader;
-    
     private ProgressBar progressBar;
-    
-	public static int PHOTO_PICKED;
-		
 	private int LAST_COLOR = Color.WHITE;
+	
+	private final int SAVE = 0;
+	private final int SHARE = 1;
     	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 		init();
 		
 		if(getIntent().getExtras().getBoolean("custom")) {
-			startActivityForResult(new Intent().setAction(Intent.ACTION_GET_CONTENT).setType("image/*"), PHOTO_PICKED);
+			startActivityForResult(new Intent().setAction(Intent.ACTION_GET_CONTENT).setType("image/*"), 0);
 		} else {
 			iLoader.displayImage(getIntent().getExtras().getString("link"), imagem, options, 
 					loadImage);
@@ -94,9 +94,46 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 		iLoader.init(config);
 	}
 	
+	SimpleImageLoadingListener loadImage = new SimpleImageLoadingListener() {
+
+		@Override
+		public void onLoadingCancelled(String imageUri, View view) {
+			super.onLoadingCancelled(imageUri, view);
+			MemeLayout.setVisibility(View.VISIBLE);
+			progressBar.setVisibility(View.GONE);
+			inferior.setVisibility(View.GONE);
+			superior.setVisibility(View.GONE);
+		}
+
+		@Override
+		public void onLoadingComplete(String imageUri, View view,
+				Bitmap loadedImage) {
+			super.onLoadingComplete(imageUri, view, loadedImage);
+			MemeLayout.setVisibility(View.VISIBLE);
+			progressBar.setVisibility(View.GONE);
+		}
+
+		@Override
+		public void onLoadingFailed(String imageUri, View view,
+				FailReason failReason) {
+			super.onLoadingFailed(imageUri, view, failReason);
+			MemeLayout.setVisibility(View.VISIBLE);
+			progressBar.setVisibility(View.GONE);
+			inferior.setVisibility(View.GONE);
+			superior.setVisibility(View.GONE);
+		}
+
+		@Override
+		public void onLoadingStarted(String imageUri, View view) {
+			super.onLoadingStarted(imageUri, view);
+			MemeLayout.setVisibility(View.GONE);
+			progressBar.setVisibility(View.VISIBLE);
+		}
+		
+	};
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		if (resultCode != RESULT_OK) {
@@ -118,7 +155,6 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 				Bitmap bmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
 				imagem.setImageBitmap(bmap);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -126,69 +162,15 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 	}
 	
 	@Override
-	protected void onStart() {
-		super.onStart();
-		EasyTracker.getInstance().activityStart(this);
-	}
-	
-	@Override
-	protected void onStop() {
-		super.onStop();
-		EasyTracker.getInstance().activityStop(this);
-	}
-	
-	SimpleImageLoadingListener loadImage = new SimpleImageLoadingListener() {
-
-		@Override
-		public void onLoadingCancelled(String imageUri, View view) {
-			// TODO Auto-generated method stub
-			super.onLoadingCancelled(imageUri, view);
-			MemeLayout.setVisibility(View.VISIBLE);
-			progressBar.setVisibility(View.GONE);
-			inferior.setVisibility(View.GONE);
-			superior.setVisibility(View.GONE);
-		}
-
-		@Override
-		public void onLoadingComplete(String imageUri, View view,
-				Bitmap loadedImage) {
-			// TODO Auto-generated method stub
-			super.onLoadingComplete(imageUri, view, loadedImage);
-			MemeLayout.setVisibility(View.VISIBLE);
-			progressBar.setVisibility(View.GONE);
-		}
-
-		@Override
-		public void onLoadingFailed(String imageUri, View view,
-				FailReason failReason) {
-			// TODO Auto-generated method stub
-			super.onLoadingFailed(imageUri, view, failReason);
-			MemeLayout.setVisibility(View.VISIBLE);
-			progressBar.setVisibility(View.GONE);
-			inferior.setVisibility(View.GONE);
-			superior.setVisibility(View.GONE);
-		}
-
-		@Override
-		public void onLoadingStarted(String imageUri, View view) {
-			super.onLoadingStarted(imageUri, view);
-			MemeLayout.setVisibility(View.GONE);
-			progressBar.setVisibility(View.VISIBLE);
-		}
-		
-	};
-	
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
-		menu.add(0,0,0,"Save")
+		menu.add(0,SAVE,0,"Save")
 			.setTitle(R.string.save)
 			.setIcon(android.R.drawable.ic_menu_save)
 			.setOnMenuItemClickListener(this)
 			.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		
-		menu.add(0,1,0,"Share")
-			//.setTitle(R.string.share)
+		menu.add(0,SHARE,0,"Share")
 			.setIcon(android.R.drawable.ic_menu_share)
 			.setOnMenuItemClickListener(this)
 			.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -209,11 +191,11 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 	@Override
 	public boolean onMenuItemClick(MenuItem item) {
 		switch(item.getItemId()) {
-		case 0:
+		case SAVE:
 			new Salvar(Editor.this, MemeLayout, false).execute();
 			break;
 			
-		case 1:
+		case SHARE:
 			new Salvar(Editor.this, MemeLayout, true).execute();
 			break;
 		}
@@ -222,25 +204,23 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 
 	@Override
 	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
 		switch(arg0.getId()) {
-		case R.id.tvAPlus:
+		case R.id.tvAPlus: //Increase text size
 			superior.setTextSize(TypedValue.COMPLEX_UNIT_PX, superior.getTextSize()+1);
 			inferior.setTextSize(TypedValue.COMPLEX_UNIT_PX, inferior.getTextSize()+1);
 			break;
 			
-		case R.id.tvAMinus:
+		case R.id.tvAMinus: //Decrease text size
 			superior.setTextSize(TypedValue.COMPLEX_UNIT_PX, superior.getTextSize()-1);
 			inferior.setTextSize(TypedValue.COMPLEX_UNIT_PX, inferior.getTextSize()-1);			
 			break;
 			
-		case R.id.tvColor:
+		case R.id.tvColor: //Change color
 			AmbilWarnaDialog pop = new AmbilWarnaDialog(Editor.this, LAST_COLOR, 
 					new OnAmbilWarnaListener() {
 
 						@Override
 						public void onCancel(AmbilWarnaDialog dialog) {
-							// TODO Auto-generated method stub
 							//Do nothing
 						}
 
@@ -251,17 +231,16 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 							superior.setTextColor(cor);
 							inferior.setTextColor(cor);
 							LAST_COLOR = cor;
-						}
-				
+						}				
 			});
 			pop.show();
 			break;
 			
-		case R.id.tvSuperior:
+		case R.id.tvSuperior: //Change top text
 			popDialog(true);
 			break;
 			
-		case R.id.tvInferior:
+		case R.id.tvInferior: //Change bottom text
 			popDialog(false);
 			break;
 			
@@ -280,11 +259,9 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 			eText.setText(inferior.getText().toString());
 		adBuilder.setTitle(gerador.de.memes.meme.R.string.set_text_pop_up_title);
 		adBuilder.setCancelable(true);
-		//adBuilder.setMessage(message);
 		adBuilder.setPositiveButton(gerador.de.memes.meme.R.string.ok, new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				if(cima)
 					superior.setText(eText.getText().toString());
 				else
@@ -294,7 +271,6 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 		adBuilder.setNegativeButton(gerador.de.memes.meme.R.string.cancel, new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				dialog.cancel();
 			}
 		});
@@ -302,4 +278,15 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 		adFinal.show();
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		EasyTracker.getInstance().activityStart(this);
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		EasyTracker.getInstance().activityStop(this);
+	}
 }

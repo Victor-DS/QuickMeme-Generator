@@ -22,15 +22,18 @@ import android.app.Activity;
 import android.net.ParseException;
 import android.util.Log;
 
+/**
+ * @author victor
+ * 
+ * Class that holds all the methods to handle the parsing.
+ * It also holds a list of Memes, so you can add a meme calling
+ * this class.
+ */
 public class Parser extends Activity {
 	
-	private final String MEMEGEN = "https://api.imgur.com/3/memegen/defaults.json";
+	private static List<Meme> memes = new ArrayList<Meme>();
 
-	private final String EXTRAS = "https://api.imgur.com/3/memegen/defaults.json";
-
-	private List<Meme> memes = new ArrayList<Meme>();
-
-	public List<Meme> getMemes(String json) {
+	public static List<Meme> getMemes(String json) {
 		try {
 			final JSONObject jObject = new JSONObject(json);
 			
@@ -49,46 +52,5 @@ public class Parser extends Activity {
 			Log.e("Parser", "General error");
 		}
 		return memes;
-	}
-	
-	public void addMeme(String id, String title, String link) {
-		memes.add(new Meme(id, title, link));
-	}
-	
-	public String getJSON(String link) {
-		try {
-			final HttpParams httpParams = new BasicHttpParams();
-		    HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
-			HttpClient httpclient = new DefaultHttpClient(httpParams);
-			HttpGet httpGet = new HttpGet(link);
-			httpGet.addHeader("Authorization", "Client-ID c18ea87d0bddb02");
-			HttpResponse response = httpclient.execute(httpGet);
-			HttpEntity entity = response.getEntity();
-			InputStream is = entity.getContent();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is,"utf-8"),8);
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				sb.append(line);
-			}
-			is.close();
-			return sb.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-			Log.e("Parser", "Connection Error");
-			return null;
-		}
-	}
-	
-	public Meme getMeme(int i) {
-		return memes.get(i);
-	}
-
-	public String getMEMEGEN() {
-		return MEMEGEN;
-	}
-
-	public String getEXTRAS() {
-		return EXTRAS;
-	}
+	}	
 }
