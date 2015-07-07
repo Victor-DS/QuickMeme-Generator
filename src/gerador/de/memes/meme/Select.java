@@ -1,5 +1,6 @@
 package gerador.de.memes.meme;
 
+import gerador.de.memes.meme.GoogleAnalytics.AnalyticsApplication;
 import gerador.de.memes.meme.adapter.GridAdapter;
 import gerador.de.memes.meme.stuff.Meme;
 import gerador.de.memes.meme.util.InternetUtil;
@@ -8,6 +9,7 @@ import gerador.de.memes.meme.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -23,9 +25,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -40,6 +43,7 @@ public class Select extends SherlockActivity implements OnItemClickListener {
 	private ProgressBar pBar;
 	private boolean custom, doubleBackToExitPressedOnce = false;
 	private Util u;
+	private Tracker t;
 	
 	private final int SD_CARD = 0;
 	private final int GOOGLE_PLAY = 1;
@@ -75,6 +79,12 @@ public class Select extends SherlockActivity implements OnItemClickListener {
 		memes.add(new Meme("nJjlN8s", "Google Play", "http://i.imgur.com/nJjlN8s.png"));
 		
 		addBrasileiros();
+		
+		t = ((AnalyticsApplication) getApplication())
+				.getTracker(AnalyticsApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("Selection Screen");
+        t.setLanguage(Locale.getDefault().getDisplayLanguage());
+        t.send(new HitBuilders.AppViewBuilder().build());
 	}
 		
 	private void startAd() {
@@ -94,6 +104,12 @@ public class Select extends SherlockActivity implements OnItemClickListener {
 	
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		t.send(new HitBuilders.EventBuilder()
+				.setCategory("Selection Screen")
+				.setAction("Item Click")
+				.setLabel(memes.get(arg2).getTitle())
+				.build());
+
 		if(arg2 == SD_CARD)
 			custom = true;
 		else custom = false;
@@ -177,16 +193,4 @@ public class Select extends SherlockActivity implements OnItemClickListener {
 		verifyGooglePlayServices();
 	}
 	
-	@Override
-	protected void onStart() {
-		super.onStart();
-		EasyTracker.getInstance().activityStart(this);
-	}
-	
-	@Override
-	protected void onStop() {
-		super.onStop();
-		EasyTracker.getInstance().activityStop(this);
-	}
-
 }

@@ -1,9 +1,13 @@
 package gerador.de.memes.meme;
 
+import gerador.de.memes.meme.GoogleAnalytics.AnalyticsApplication;
+import gerador.de.memes.meme.async.Salvar;
+
 import java.io.FileNotFoundException;
+import java.util.Locale;
+
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener;
-import gerador.de.memes.meme.async.Salvar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,11 +25,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -46,6 +52,7 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
     private ImageLoader iLoader;
     private ProgressBar progressBar;
 	private int LAST_COLOR = Color.WHITE;
+	private Tracker t;
 	
 	private final int SAVE = 0;
 	private final int SHARE = 1;
@@ -87,11 +94,17 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 			.cacheOnDisc(true)
 			.showImageOnFail(R.drawable.warning)
 			.build();
-	
+		
 		iLoader = ImageLoader.getInstance();
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(Editor.this)
 			.build();
 		iLoader.init(config);
+		
+		t = ((AnalyticsApplication) getApplication())
+				.getTracker(AnalyticsApplication.TrackerName.APP_TRACKER);
+        t.setScreenName("Meme Editor");
+        t.setLanguage(Locale.getDefault().getDisplayLanguage());
+        t.send(new HitBuilders.AppViewBuilder().build());
 	}
 	
 	SimpleImageLoadingListener loadImage = new SimpleImageLoadingListener() {
@@ -193,10 +206,23 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 		switch(item.getItemId()) {
 		case SAVE:
 			new Salvar(Editor.this, MemeLayout, false).execute();
+			
+			t.send(new HitBuilders.EventBuilder()
+					.setCategory("Editor - Button Click")
+					.setAction("Save")
+					.setLabel(getIntent().getExtras().getString("title"))
+					.build());
 			break;
 			
 		case SHARE:
 			new Salvar(Editor.this, MemeLayout, true).execute();
+			
+			t.send(new HitBuilders.EventBuilder()
+					.setCategory("Editor - Button Click")
+					.setAction("Share")
+					.setLabel(getIntent().getExtras().getString("title"))
+					.build());
+
 			break;
 		}
 		return true;
@@ -276,17 +302,5 @@ public class Editor extends SherlockActivity implements OnMenuItemClickListener,
 		});
 		AlertDialog adFinal = adBuilder.create();
 		adFinal.show();
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		EasyTracker.getInstance().activityStart(this);
-	}
-	
-	@Override
-	protected void onStop() {
-		super.onStop();
-		EasyTracker.getInstance().activityStop(this);
 	}
 }
