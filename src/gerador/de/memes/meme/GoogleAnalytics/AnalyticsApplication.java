@@ -17,7 +17,7 @@ import com.google.android.gms.analytics.Tracker;
  */
 public class AnalyticsApplication extends Application {
 
-    private static final String PROPERTY_ID = "UA-38018123-14";
+    private static final String PROPERTY_ID = "UA-XXXXXXXX-XX";
     
     /**
      * Enum used to identify the tracker that needs to be used for tracking.
