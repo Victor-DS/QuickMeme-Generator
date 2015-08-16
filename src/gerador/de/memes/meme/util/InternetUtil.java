@@ -32,7 +32,7 @@ public class InternetUtil {
 		    HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
 			HttpClient httpclient = new DefaultHttpClient(httpParams);
 			HttpGet httpGet = new HttpGet(link);
-			httpGet.addHeader("Authorization", "Client-ID c18ea87d0bddb02");
+			httpGet.addHeader("Authorization", "Client-ID XXXXXXXXX");
 			HttpResponse response = httpclient.execute(httpGet);
 			HttpEntity entity = response.getEntity();
 			InputStream is = entity.getContent();
