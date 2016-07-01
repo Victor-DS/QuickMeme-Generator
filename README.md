@@ -1,11 +1,8 @@
 # QuickMeme-Generator
 A simple Meme Generator using IMGUR's API to get a list of memes.
 
-###### Selection List
-![Selection List](http://i.imgur.com/ZmWhLh8.jpg "Selection List")
-
-###### Editor
-![Selection List](http://i.imgur.com/0F3KHP4.jpg "Selection List")
+###### Screenshots
+<img src="http://i.imgur.com/ZmWhLh8.jpg" width="250"><img src="http://i.imgur.com/0F3KHP4m.jpg" width="250">
 
 
 ##### About
